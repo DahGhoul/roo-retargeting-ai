@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roo Retargeting AI · roo | Soluciones Digitales</title><link rel="icon" type="image/png" href="/assets/roo-logo-dark.png" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-area">
+      <img src="/assets/roo-logo-dark.png" alt="roo Soluciones Digitales" class="brand-logo" />
+      <div class="brand-sep"></div>
+      <div>
+        <div class="brand-title-row">
+          <h1 class="brand-title">Roo Retargeting AI</h1>
+          <span class="tag-pill">Motor Autónomo LEAD → PAYER</span>
+        </div>
+        <p class="brand-sub">Tecnología con Propósito · Orquestación omnicanal universal (Zero-DDL)</p>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <span id="pillWhatsapp" class="status-pill warn">WhatsApp: Conectando...</span>
+      <span id="pillSmtp" class="status-pill neutral">SMTP: Verificando...</span>
+      <span id="pillStorage" class="status-pill ok">JSON Atómico · Zero-DDL</span>
+      <span id="pillSql" class="status-pill neutral">SQL DML: Opcional</span>
+      <a href="/demo-shop.html" target="_blank" class="btn btn-primary btn-sm">Abrir Tienda Demo SDK ↗</a>
+    </div>
+  </header>
+
+  <nav class="tab-nav">
+    <div class="tab-nav-inner">
+      <button class="tab-btn active" data-tab="torre">1. Torre en Vivo &amp; Cola SLA</button>
+      <button class="tab-btn" data-tab="leads">2. Directorio de LEADS (Números)</button>
+      <button class="tab-btn" data-tab="historial">3. Historial, Chat &amp; Correos</button>
+      <button class="tab-btn" data-tab="config">4. Marca, Reglas IA &amp; SDK</button>
+    </div>
+  </nav>
+
+  <main class="main-wrap">
+    <div id="toastBanner" class="toast hidden"></div>
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: TORRE EN VIVO & COLA SLA                                      -->
+    <!-- =================================================================== -->
+    <section id="tab-torre" class="tab-panel active">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Visitantes en Vivo</span>
+          <strong class="kpi-value" id="kpiActiveSessions">0</strong>
+          <span class="kpi-sub" id="kpiActiveStoreHint">Tienda Demo · roo</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Abandonos Atendidos</span>
+          <strong class="kpi-value" id="kpiTotalEvents">0</strong>
+          <span class="kpi-sub" id="kpiChannelMix">0 Email · 0 WA · 0 Asesor</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Trazabilidad Apertura / Clic</span>
+          <strong class="kpi-value" id="kpiOpensClicks">0 / 0</strong>
+          <span class="kpi-sub">Píxel 1×1 HTML · Redirect /r/:token</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Conversión LEAD → PAYER</span>
+          <strong class="kpi-value text-emerald" id="kpiConverted">0</strong>
+          <span class="kpi-sub" id="kpiConversionRate">0% tasa de recuperación</span>
+        </div>
+        <div class="kpi-card highlight-card">
+          <span class="kpi-label">Ingresos Recuperados</span>
+          <strong class="kpi-value text-blue" id="kpiRevenue">S/ 0.00</strong>
+          <span class="kpi-sub" id="kpiFunnelCounts">0 LEADS · 0 PAYERS</span>
+        </div>
+      </div>
+
+      <div class="grid-2 mt-5">
+        <!-- VISITANTES ACTIVOS EN VIVO -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Visitantes Activos en Tienda Conectada</h2>
+              <p class="muted-sm">Telemetría en tiempo real vía SDK Universal (<code class="mono">/api/telemetry/heartbeat</code>)</p>
+            </div>
+            <button id="btnRefreshNow" class="btn btn-outline btn-sm">Actualizar</button>
+          </div>
+          <div id="liveSessionsList" class="stack-list">
+            <div class="empty-box">No hay sesiones activas en este momento. Abre <a href="/demo-shop.html" target="_blank">Tienda Demo SDK</a> para probar en vivo.</div>
+          </div>
+        </div>
+
+        <!-- COLA PRIORITARIA ASESOR (>10 MIN) -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Cola Prioritaria Asesor (&gt; 10 min SLA)</h2>
+              <p class="muted-sm">LEADS de altísima intención con script de cierre listo para llamada inmediata.</p>
+            </div>
+            <span id="badgePendingAdvisor" class="status-pill danger">0 pendientes</span>
+          </div>
+          <div id="advisorQueueList" class="stack-list">
+            <div class="empty-box">Sin alertas urgentes pendientes en cola SLA.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APRENDIZAJE CERRADO A/B -->
+      <div class="card mt-5">
+        <div class="card-head">
+          <div>
+            <h2>Aprendizaje Cerrado A/B por Estrategia (ε-greedy)</h2>
+            <p class="muted-sm">El agente pondera en vivo qué ángulo persuasivo convierte más LEADS a PAYERS según el rango de permanencia.</p>
+          </div>
+        </div>
+        <div id="abStatsGrid" class="ab-grid"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: DIRECTORIO DE LEADS (CRUD PERSISTENTE)                        -->
+    <!-- =================================================================== -->
+    <section id="tab-leads" class="tab-panel">
+      <div class="grid-leads">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2 id="leadFormTitle">Guardar / Editar Contacto LEAD</h2>
+              <p class="muted-sm">Persistencia local inmediata en <code class="mono">data/retargeting_state.json</code> (sobrevive reinicios).</p>
+            </div>
+          </div>
+          <form id="leadForm" class="form-stack">
+            <input type="hidden" id="leadEditId" value="" />
+            <div class="form-row-2">
+              <div>
+                <label>Nombre *</label>
+                <input id="leadFirstName" type="text" placeholder="Ej: Ana Lucía" required />
+              </div>
+              <div>
+                <label>Apellidos</label>
+                <input id="leadLastName" type="text" placeholder="Ej: Torres Vega" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label>WhatsApp / Celular</label>
+                <input id="leadPhone" type="tel" placeholder="+51 900 000 001" />
+              </div>
+              <div>
+                <label>Correo Electrónico</label>
+                <input id="leadEmail" type="email" placeholder="cliente@example.com" />
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div>
+                <label>DNI / Doc.</label>
+                <input id="leadDoc" type="text" placeholder="00000001" />
+              </div>
+              <div>
+                <label>Distrito / Ciudad</label>
+                <input id="leadDistrict" type="text" placeholder="Trujillo" />
+              </div>
+              <div>
+                <label>Etapa</label>
+                <select id="leadStage">
+                  <option value="LEAD">LEAD</option>
+                  <option value="PAYER">PAYER</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label>Notas</label>
+              <input id="leadNotes" type="text" placeholder="Observación del cliente o campaña" />
+            </div>
+            <div class="btn-row mt-2">
+              <button type="submit" class="btn btn-primary">Guardar Contacto</button>
+              <button type="button" id="btnResetLeadForm" class="btn btn-outline">Limpiar Formulario</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Directorio Persistente de LEADS</h2>
+              <p class="muted-sm">Los números capturados en el SDK o aquí quedan guardados para campañas reales.</p>
+            </div>
+            <input id="leadSearchInput" type="search" placeholder="Buscar nombre, teléfono o correo..." class="search-input" />
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>WhatsApp</th>
+                  <th>Correo</th>
+                  <th>Etapa</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="leadsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 3: HISTORIAL, CHAT BIDIRECCIONAL & CORREOS HTML                  -->
+    <!-- =================================================================== -->
+    <section id="tab-historial" class="tab-panel">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>Historial de Interacciones, Trazabilidad XAI &amp; Recuperación</h2>
+            <p class="muted-sm">Inspecciona el motivo exacto de cada decisión del agente, abre el correo HTML generado, conversa por WhatsApp o valida el pago a PAYER.</p>
+          </div>
+          <div class="filter-row">
+            <select id="eventsFilter">
+              <option value="ALL">Todos los eventos</option>
+              <option value="CORREO_HTML">Solo Correo HTML</option>
+              <option value="WHATSAPP_DIRECTO">Solo WhatsApp</option>
+              <option value="ALERTA_ASESOR_LLAMADA">Solo Alerta Asesor (&gt;10m)</option>
+              <option value="CONVERTIDO_PAYER">Solo Convertidos a PAYER</option>
+            </select>
+          </div>
+        </div>
+        <div id="eventsFeed" class="events-feed">
+          <div class="empty-box">Aún no se registran eventos de abandono. Ejecuta una prueba en la pestaña 4 o en Tienda Demo SDK.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: MARCA, REGLAS IA, WHATSAPP QR, TEST Y SDK UNIVERSAL           -->
+    <!-- =================================================================== -->
+    <section id="tab-config" class="tab-panel">
+      <div class="grid-2">
+        <!-- CONSOLA DE PRUEBA CONTROLADA -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Consola de Disparo Controlado (Prueba en Vivo)</h2>
+              <p class="muted-sm">Tus datos ingresados aquí se conservan automáticamente y se guardan en el Directorio.</p>
+            </div>
+          </div>
+          <div class="form-stack">
+            <div>
+              <label>Cargar LEAD del Directorio:</label>
+              <select id="testLeadSelect">
+                <option value="">-- Usar datos escritos abajo --</option>
+              </select>
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label>Nombre del LEAD:</label>
+                <input id="testLeadName" type="text" placeholder="Ana Lucía Torres Vega" />
+              </div>
+              <div>
+                <label>WhatsApp (+51 ...):</label>
+                <input id="testLeadPhone" type="tel" placeholder="+51 900 000 001" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label>Correo Electrónico:</label>
+                <input id="testLeadEmail" type="email" placeholder="cliente@example.com" />
+              </div>
+              <div>
+                <label>Producto Evaluado:</label>
+                <select id="testProductSelect"></select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label>Permanencia Simulada (segundos):</label>
+                <input id="testSecondsInput" type="number" min="5" value="180" />
+              </div>
+              <div>
+                <label>Presets de Rango Horario:</label>
+                <div class="btn-row">
+                  <button type="button" class="btn btn-outline btn-xs" onclick="setTestPreset(120)">&lt;5m Email</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="setTestPreset(420)">5-10m WA</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="setTestPreset(720)">&gt;10m Asesor</button>
+                </div>
+              </div>
+            </div>
+            <div class="btn-row mt-2">
+              <button type="button" id="btnRunControlledTest" class="btn btn-primary">Disparar Agente Ahora</button>
+              <button type="button" id="btnSaveQuickLead" class="btn btn-outline">Guardar Número en Directorio</button>
+            </div>
+          </div>
+
+          <hr class="sep" />
+          <h3 class="sub-h3">Diagnóstico Directo de Canales Reales</h3>
+          <div class="form-row-2 mt-2">
+            <div>
+              <label>Probar Correo SMTP Real:</label>
+              <div class="inline-action">
+                <input id="diagEmailInput" type="email" placeholder="destinatario@gmail.com" />
+                <button type="button" id="btnDiagEmail" class="btn btn-blue btn-sm">Enviar Test</button>
+              </div>
+            </div>
+            <div>
+              <label>Probar WhatsApp Real (Baileys):</label>
+              <div class="inline-action">
+                <input id="diagPhoneInput" type="tel" placeholder="+51 900 000 001" />
+                <button type="button" id="btnDiagWa" class="btn btn-emerald btn-sm">Enviar Test</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WHATSAPP QR & CONFIGURACIÓN UNIVERSO ROO -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Sesión WhatsApp &amp; Marca Conectada</h2>
+              <p class="muted-sm">Escanea el QR con WhatsApp (Dispositivos vinculados) para habilitar mensajería y NLU bidireccional.</p>
+            </div>
+            <button type="button" id="btnResetWa" class="btn btn-outline btn-sm">Reiniciar QR</button>
+          </div>
+          <div id="waPanelBox" class="wa-box">
+            <div id="waQrBox" class="wa-qr-wrap">Cargando estado de WhatsApp...</div>
+            <div id="waConnectedBox" class="wa-conn-wrap hidden"></div>
+          </div>
+
+          <hr class="sep" />
+          <div class="card-head">
+            <div>
+              <h3 class="sub-h3">Configuración de Tienda Conectada, SMTP y Guardrails</h3>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-outline btn-xs" onclick="applyStorePreset('roo')">Preset Demo Roo</button>
+              <button type="button" class="btn btn-outline btn-xs" onclick="applyStorePreset('external')">Preset Tienda Externa</button>
+            </div>
+          </div>
+
+          <form id="configForm" class="form-stack mt-2">
+            <div class="form-row-2">
+              <div>
+                <label>Nombre de Tienda Cliente:</label>
+                <input id="cfgStoreName" type="text" />
+              </div>
+              <div>
+                <label>URL Retorno Checkout:</label>
+                <input id="cfgStoreUrl" type="url" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label>Dirección Física:</label>
+                <input id="cfgStoreAddress" type="text" />
+              </div>
+              <div>
+                <label>Asesor SLA (&gt;10 min):</label>
+                <input id="cfgAdvisorName" type="text" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label>Teléfono Asesor (Alertas WA):</label>
+                <input id="cfgAdvisorPhone" type="tel" />
+              </div>
+              <div>
+                <label>Correo Asesor:</label>
+                <input id="cfgAdvisorEmail" type="email" />
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div>
+                <label>Tope Email (seg):</label>
+                <input id="cfgEmailMax" type="number" min="15" />
+              </div>
+              <div>
+                <label>Tope WhatsApp (seg):</label>
+                <input id="cfgWaMax" type="number" min="30" />
+              </div>
+              <div>
+                <label>Delay Toque 2 (seg):</label>
+                <input id="cfgTouch2" type="number" min="30" />
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div>
+                <label>Guardrail Máx. Desc (%):</label>
+                <input id="cfgMaxDiscount" type="number" min="1" max="20" />
+              </div>
+              <div>
+                <label>Cooldown Anti-Spam (min):</label>
+                <input id="cfgCooldown" type="number" min="0" />
+              </div>
+              <div>
+                <label>Horario Silencioso (22h-07h):</label>
+                <select id="cfgQuietHours">
+                  <option value="false">Desactivado (24/7)</option>
+                  <option value="true">Activado</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div>
+                <label>SMTP Host:</label>
+                <input id="cfgSmtpHost" type="text" />
+              </div>
+              <div>
+                <label>SMTP Puerto (465/587):</label>
+                <input id="cfgSmtpPort" type="number" />
+              </div>
+              <div>
+                <label>SMTP Usuario:</label>
+                <input id="cfgSmtpUser" type="email" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label>SMTP App Password:</label>
+                <input id="cfgSmtpPass" type="password" placeholder="Dejar vacío para mantener actual" />
+              </div>
+              <div>
+                <label>Gemini API Key (NLU opcional):</label>
+                <input id="cfgGeminiKey" type="password" placeholder="Opcional (motor NLU local siempre activo)" />
+              </div>
+            </div>
+            <div class="flex-end mt-2">
+              <button type="submit" class="btn btn-primary">Guardar Configuración y Reiniciar SMTP</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- SDK UNIVERSAL & ALTA PRODUCTO -->
+      <div class="grid-2 mt-5">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>SDK Web Universal (1 Línea de Integración)</h2>
+              <p class="muted-sm">Copia y pega este script antes de <code class="mono">&lt;/body&gt;</code> en cualquier plataforma web.</p>
+            </div>
+            <button type="button" id="btnCopySdk" class="btn btn-blue btn-sm">Copiar Snippet</button>
+          </div>
+          <pre id="sdkSnippetCode" class="code-box">&lt;script src="http://localhost:4000/sdk/roo-agent.js" data-store="Mi Tienda Online"&gt;&lt;/script&gt;</pre>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Alta Rápida de Producto en Catálogo Local</h2>
+              <p class="muted-sm">Añade cualquier SKU sin depender de una base de datos externa.</p>
+            </div>
+          </div>
+          <form id="customProductForm" class="form-row-3 mt-2">
+            <input id="custProdName" type="text" placeholder="Nombre producto (ej: iPad Air M3)" required />
+            <input id="custProdPrice" type="number" min="1" step="0.01" placeholder="Precio S/" required />
+            <button type="submit" class="btn btn-primary">Agregar SKU</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="roo-footer">
+    <div class="roo-footer-inner">
+      <img src="/assets/roo-logo-white-badge.png" alt="roo Soluciones Digitales - Tecnología con Propósito" class="footer-logo" />
+      <div class="footer-meta">
+        <div><strong>Roo Retargeting AI</strong> · Producto Universal Independiente de Conversión LEAD → PAYER</div>
+        <div class="muted-light">Desarrollado bajo la marca <strong>roo | Soluciones Digitales</strong> · Trujillo, Perú</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL CHAT BIDIRECCIONAL & RESPUESTA MANUAL -->
+  <div id="chatModal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <h3 id="chatModalTitle">Conversación WhatsApp</h3>
+          <p id="chatModalSub" class="muted-sm"></p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="closeChatModal()">Cerrar ✕</button>
+      </div>
+      <div id="chatTraceSummary" class="trace-box"></div>
+      <div id="chatMessagesBox" class="chat-thread"></div>
+      <form id="manualReplyForm" class="manual-reply-bar">
+        <input id="manualReplyInput" type="text" placeholder="Escribir mensaje (respuesta Asesor o prueba NLU de cliente)..." required />
+        <button type="submit" class="btn btn-emerald">Enviar por WhatsApp</button>
+        <button type="button" id="btnSimulateClientNlu" class="btn btn-blue">Simular Cliente (NLU)</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL VISOR HTML DE CORREO -->
+  <div id="emailModal" class="modal-backdrop hidden">
+    <div class="modal-box modal-wide">
+      <div class="modal-head">
+        <div>
+          <h3 id="emailModalTitle">Vista Previa Correo HTML Real</h3>
+          <p id="emailModalSub" class="muted-sm"></p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="closeEmailModal()">Cerrar ✕</button>
+      </div>
+      <iframe id="emailPreviewFrame" class="email-iframe" title="Vista previa correo HTML"></iframe>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

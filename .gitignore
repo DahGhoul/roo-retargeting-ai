@@ -1,0 +1,7 @@
+node_modules/
+wa_auth_session/
+data/
+.env
+npm-debug.log*
+.DS_Store
+*.bak

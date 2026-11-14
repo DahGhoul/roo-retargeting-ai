@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda Demo Sandbox · SDK Universal roo | Soluciones Digitales</title><link rel="icon" type="image/png" href="/assets/roo-logo-dark.png" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #0f172a;
+      --blue: #2563eb;
+      --green: #059669;
+      --amber: #d97706;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .roo-top-banner {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      border-bottom: 3px solid #f4c58f;
+    }
+    .roo-top-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .roo-top-left img {
+      height: 44px;
+      width: auto;
+      display: block;
+    }
+    .roo-top-badge {
+      background: rgba(244, 197, 143, 0.16);
+      border: 1px solid rgba(244, 197, 143, 0.45);
+      color: #fde6c4;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+    .roo-back-link {
+      color: #ffffff;
+      background: #2563eb;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 980px) {
+      .container { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+    .panel h2 {
+      margin: 0 0 6px;
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0 0 16px;
+    }
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .prod-card {
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+      transition: all .15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .prod-card.active {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+    .prod-card img {
+      width: 100%;
+      height: 130px;
+      object-fit: contain;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 8px;
+    }
+    .prod-name { font-size: 14px; font-weight: 700; margin: 2px 0; }
+    .prod-meta { font-size: 11.5px; color: var(--muted); }
+    .prod-price { font-size: 17px; font-weight: 800; color: #1d4ed8; margin: 4px 0; }
+    .btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    button {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all .15s;
+    }
+    button:hover { background: #e2e8f0; }
+    button.primary { background: #0f172a; color: #fff; border-color: #0f172a; }
+    button.primary:hover { background: #1e293b; }
+    button.blue { background: #2563eb; color: #fff; border-color: #2563eb; }
+    button.green { background: #059669; color: #fff; border-color: #059669; }
+    button.amber { background: #d97706; color: #fff; border-color: #d97706; }
+    label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+    input, select {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      font-size: 13px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .telemetry-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .metric-pill {
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 9px 10px;
+      text-align: center;
+    }
+    .metric-pill strong { display: block; font-size: 16px; color: #0f172a; }
+    .metric-pill span { font-size: 11px; color: var(--muted); }
+    .recovery-box {
+      display: none;
+      background: #ecfdf5;
+      border: 2px solid #10b981;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .recovery-box.visible { display: block; }
+    .status-log {
+      background: #0f172a;
+      color: #cbd5e1;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: Consolas, monospace;
+      font-size: 11.5px;
+      max-height: 170px;
+      overflow-y: auto;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header class="roo-top-banner">
+    <div class="roo-top-left">
+      <img src="/assets/roo-logo-white-badge.png" alt="roo Soluciones Digitales" />
+      <div>
+        <div style="font-weight:800;font-size:15px;">Tienda Demo Sandbox Universal</div>
+        <div style="font-size:12px;color:#cbd5e1;">Embebida con <code style="color:#f4c58f;">&lt;script src="/sdk/roo-agent.js"&gt;</code> · Cero dependencia de BD</div>
+      </div>
+      <span class="roo-top-badge">DEMO SDK UNIVERSAL</span>
+    </div>
+    <a class="roo-back-link" href="/">← Volver a Torre de Control Roo (:4000)</a>
+  </header>
+
+  <main class="container">
+    <section>
+      <div id="recoveryBox" class="recovery-box">
+        <div style="font-size:11px;font-weight:800;color:#047857;text-transform:uppercase;">Recuperación Mágica Activa (?recover=)</div>
+        <h3 id="recTitle" style="margin:6px 0 4px;font-size:18px;color:#064e3b;">Tu carrito fue restaurado</h3>
+        <p id="recDesc" style="margin:0 0 12px;font-size:13.5px;color:#065f46;"></p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <select id="recPayMethod" style="width:auto;margin:0;">
+            <option value="YAPE">Yape</option>
+            <option value="PLIN">Plin</option>
+            <option value="TARJETA">Tarjeta Crédito/Débito</option>
+          </select>
+          <button class="green" id="btnCompleteRecovery">Confirmar Pago → Convertir LEAD a PAYER</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Catálogo de Prueba (SDK Conectado)</h2>
+        <p class="sub">Haz clic en cualquier producto para emitir eventos reales de interés, carrito y checkout hacia <strong>Roo Retargeting AI</strong>.</p>
+        <div id="catalogGrid" class="catalog-grid">Cargando catálogo...</div>
+      </div>
+    </section>
+
+    <aside>
+      <div class="panel">
+        <h2>Identidad del LEAD &amp; Simulación en Vivo</h2>
+        <p class="sub">Al escribir correo o celular, el SDK los registra automáticamente en el Directorio Persistente del agente.</p>
+
+        <label>Cargar LEAD guardado (opcional):</label>
+        <select id="savedLeadSelect">
+          <option value="">-- Escribir datos manualmente abajo --</option>
+        </select>
+
+        <label>Nombre completo del visitante:</label>
+        <input id="leadNameInput" type="text" placeholder="Ej: Ana Lucía Torres Vega" />
+
+        <label>Correo electrónico (para Canal Email HTML):</label>
+        <input id="leadEmailInput" type="email" placeholder="cliente@example.com" />
+
+        <label>WhatsApp Perú (+51 ...):</label>
+        <input id="leadPhoneInput" type="tel" placeholder="+51 900 000 001" />
+
+        <div class="telemetry-strip">
+          <div class="metric-pill"><strong id="dwellDisplay">0s</strong><span>Tiempo activo</span></div>
+          <div class="metric-pill"><strong id="tierDisplay">< 5 min</strong><span>Rango SLA</span></div>
+          <div class="metric-pill"><strong id="cartCountDisplay">0</strong><span>En carrito</span></div>
+        </div>
+
+        <label>Simular Permanencia Acelerada:</label>
+        <div class="btn-row" style="margin-bottom:12px;">
+          <button onclick="setDemoDwell(95)">~1.5 min (Email)</button>
+          <button onclick="setDemoDwell(390)">~6.5 min (WhatsApp)</button>
+          <button onclick="setDemoDwell(710)">~11.8 min (Asesor)</button>
+        </div>
+
+        <div class="btn-row">
+          <button class="blue" id="btnStartCheckout" style="flex:1;">1. Iniciar Checkout</button>
+          <button class="amber" id="btnSimulateExit" style="flex:1;">2. Salir / Abandonar</button>
+        </div>
+
+        <div id="sdkLog" class="status-log">SDK roo-agent.js inicializado. Esperando interacción...</div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="/sdk/roo-agent.js" data-store="Tienda Demo · roo" data-min-dwell="15"></script>
+  <script>
+    const catalogGrid = document.getElementById('catalogGrid');
+    const savedLeadSelect = document.getElementById('savedLeadSelect');
+    const leadNameInput = document.getElementById('leadNameInput');
+    const leadEmailInput = document.getElementById('leadEmailInput');
+    const leadPhoneInput = document.getElementById('leadPhoneInput');
+    const dwellDisplay = document.getElementById('dwellDisplay');
+    const tierDisplay = document.getElementById('tierDisplay');
+    const cartCountDisplay = document.getElementById('cartCountDisplay');
+    const sdkLog = document.getElementById('sdkLog');
+
+    let catalog = [];
+    let selectedSlug = null;
+    let simulatedDwell = 0;
+
+    function logSdk(msg) {
+      const ts = new Date().toLocaleTimeString('es-PE');
+      sdkLog.innerHTML = `[${ts}] ${msg}<br/>` + sdkLog.innerHTML;
+    }
+
+    function updateMetricsUi() {
+      const snap = window.RooAgent.getSnapshot();
+      const secs = Math.max(simulatedDwell, snap.secondsViewed || 0);
+      dwellDisplay.textContent = secs + 's';
+      tierDisplay.textContent = secs <= 300 ? '< 5 min (Email)' : secs <= 600 ? '5-10 min (WA)' : '> 10 min (Asesor)';
+      cartCountDisplay.textContent = String((snap.cartItems || []).length);
+    }
+
+    function setDemoDwell(secs) {
+      simulatedDwell = secs;
+      window.RooAgent.setSecondsViewed(secs);
+      updateMetricsUi();
+      logSdk(`Permanencia ajustada a ${secs}s para prueba inmediata.`);
+    }
+
+    function syncManualLead() {
+      const fullName = leadNameInput.value.trim();
+      window.RooAgent.setLead({
+        leadName: fullName || 'Visitante Demo',
+        firstName: (fullName.split(' ')[0] || 'Visitante').trim(),
+        lastName: fullName.split(' ').slice(1).join(' '),
+        email: leadEmailInput.value.trim(),
+        phone: leadPhoneInput.value.trim(),
+      });
+    }
+
+    async function loadDemoContext() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        catalog = data.catalog || [];
+        renderCatalog();
+
+        const leads = data.leads || [];
+        savedLeadSelect.innerHTML = '<option value="">-- Escribir datos manualmente abajo --</option>';
+        for (const l of leads) {
+          const opt = document.createElement('option');
+          opt.value = String(l.id);
+          opt.textContent = `${l.firstName} ${l.lastName} · ${l.phone || l.email}`;
+          opt.dataset.name = `${l.firstName} ${l.lastName}`.trim();
+          opt.dataset.email = l.email || '';
+          opt.dataset.phone = l.phone || '';
+          savedLeadSelect.appendChild(opt);
+        }
+
+        if (!leadPhoneInput.value && leads[0]) {
+          leadNameInput.value = `${leads[0].firstName} ${leads[0].lastName}`.trim();
+          leadEmailInput.value = leads[0].email || '';
+          leadPhoneInput.value = leads[0].phone || '';
+          syncManualLead();
+        }
+      } catch (e) {
+        catalogGrid.innerHTML = '<p>No se pudo conectar con /api/status.</p>';
+      }
+    }
+
+    function renderCatalog() {
+      if (!selectedSlug && catalog[0]) {
+        selectedSlug = catalog[0].slug;
+        window.RooAgent.setProduct(catalog[0]);
+      }
+      catalogGrid.innerHTML = catalog.map((p) => {
+        const active = p.slug === selectedSlug ? 'active' : '';
+        return `
+          <div class="prod-card ${active}" data-roo-product="${p.slug}">
+            <div>
+              <img src="${p.image}" alt="${p.name}" onerror="this.style.display='none'"/>
+              <div class="prod-name">${p.name}</div>
+              <div class="prod-meta">${p.color} · ${p.capacity} · Stock: ${p.stock}</div>
+              <div class="prod-price">S/ ${Number(p.price).toLocaleString('es-PE', { minimumFractionDigits: 2 })}</div>
+            </div>
+            <div class="btn-row">
+              <button onclick="selectProduct('${p.slug}')">Ver</button>
+              <button class="primary" onclick="addProductToCart('${p.slug}')">+ Carrito</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.selectProduct = function (slug) {
+      selectedSlug = slug;
+      const p = catalog.find((x) => x.slug === slug);
+      if (!p) return;
+      window.RooAgent.setProduct(p);
+      renderCatalog();
+      logSdk(`Foco en producto: <b>${p.name}</b>.`);
+    };
+
+    window.addProductToCart = function (slug) {
+      const p = catalog.find((x) => x.slug === slug);
+      if (!p) return;
+      selectedSlug = slug;
+      window.RooAgent.setProduct(p);
+      window.RooAgent.addToCart({ id: p.id, slug: p.slug, name: p.name, price: p.price, qty: 1 });
+      renderCatalog();
+      updateMetricsUi();
+      logSdk(`Agregado al carrito: <b>${p.name}</b>.`);
+    };
+
+    savedLeadSelect.addEventListener('change', () => {
+      const opt = savedLeadSelect.selectedOptions[0];
+      if (!opt || !opt.value) return;
+      leadNameInput.value = opt.dataset.name || '';
+      leadEmailInput.value = opt.dataset.email || '';
+      leadPhoneInput.value = opt.dataset.phone || '';
+      syncManualLead();
+      logSdk(`Lead seleccionado: <b>${leadNameInput.value}</b> (${leadPhoneInput.value}).`);
+    });
+
+    [leadNameInput, leadEmailInput, leadPhoneInput].forEach((el) => {
+      el.addEventListener('change', syncManualLead);
+    });
+
+    document.getElementById('btnStartCheckout').addEventListener('click', () => {
+      syncManualLead();
+      const snap = window.RooAgent.getSnapshot();
+      if (!(snap.cartItems || []).length && catalog[0]) {
+        const p = catalog.find((x) => x.slug === selectedSlug) || catalog[0];
+        window.RooAgent.addToCart({ id: p.id, slug: p.slug, name: p.name, price: p.price, qty: 1 });
+      }
+      window.RooAgent.markCheckoutStarted();
+      updateMetricsUi();
+      logSdk('Checkout iniciado. Si el visitante abandona sin pagar, se activará el agente.');
+    });
+
+    document.getElementById('btnSimulateExit').addEventListener('click', async () => {
+      syncManualLead();
+      logSdk('Disparando evento de abandono al motor Roo Retargeting AI...');
+      const res = await window.RooAgent.triggerAbandonmentNow('SALIDA_CHECKOUT_SANDBOX', { bypassCooldown: true });
+      if (res && res.ok) {
+        const ev = res.event || {};
+        logSdk(`✅ Disparado canal <b>${ev.channel}</b> (${ev.probability}% prob.) → Token <b>${ev.recoverToken}</b>.`);
+      } else {
+        logSdk(`⚠️ Respuesta: ${JSON.stringify(res)}`);
+      }
+    });
+
+    // Recuperación desde enlace mágico (?recover=ROO-...)
+    window.addEventListener('roo:recover', (e) => {
+      const ev = e.detail;
+      if (!ev) return;
+      const box = document.getElementById('recoveryBox');
+      const coupon = ev.coupon;
+      const finalPrice = coupon ? coupon.finalPricePen : ev.productPrice;
+      document.getElementById('recTitle').textContent = `¡Hola ${ev.leadFirstName || 'Cliente'}! Tu ${ev.productName} sigue apartado`;
+      document.getElementById('recDesc').innerHTML =
+        `Token: <b>${ev.recoverToken}</b> · Precio: <b>S/ ${Number(finalPrice).toLocaleString('es-PE', { minimumFractionDigits: 2 })}</b>` +
+        (coupon ? ` (Cupón <b>${coupon.code}</b>: -${coupon.discountPercent}% aplicado)` : '');
+      box.classList.add('visible');
+
+      document.getElementById('btnCompleteRecovery').onclick = async () => {
+        const method = document.getElementById('recPayMethod').value;
+        const out = await window.RooAgent.markCompletedPurchase({ paymentMethod: method, amount: finalPrice });
+        if (out && out.ok) {
+          document.getElementById('recDesc').innerHTML =
+            `✅ <b>PAGO VALIDADO (${method})</b> — Comprobante: <b>${out.event?.paymentInfo?.receiptNumber}</b>. LEAD promovido a <b>PAYER</b>.`;
+          document.getElementById('btnCompleteRecovery').disabled = true;
+          logSdk(`🎉 Conversión LEAD → PAYER confirmada (${out.event?.recoverToken}).`);
+        }
+      };
+    });
+
+    setInterval(updateMetricsUi, 1000);
+    loadDemoContext();
+  </script>
+</body>
+</html>

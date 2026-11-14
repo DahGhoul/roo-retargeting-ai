@@ -1,0 +1,18 @@
+services:
+  roo-retargeting-ai:
+    build: .
+    container_name: roo-retargeting-ai
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      STORE_NAME: ${STORE_NAME:-Tienda Demo · roo}
+      STORE_URL: ${STORE_URL:-http://localhost:4000/demo-shop.html}
+      DB_HOST: ${DB_HOST:-host.docker.internal}
+      DB_PORT: ${DB_PORT:-1433}
+      DB_USER: ${DB_USER:-}
+      DB_PASSWORD: ${DB_PASSWORD:-}
+      DB_NAME: ${DB_NAME:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
